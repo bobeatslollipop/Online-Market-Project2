@@ -245,24 +245,24 @@ def test_1(N=20, d=30, n=100, k=10):
 
 
 def test_2(N=20, d=30, n=100, k=10):
-    epsilon_list = [i/5 for i in range(d-1)]
+    epsilon_list = [i/50 for i in range(d-1)]
     epsilon_list.append(math.sqrt(math.log(k) / n))
     stock_OPT = np.zeros((N, d+1))
     stock_regret = np.zeros((N, d+1))
     adv_OPT = np.zeros((N, d+1))
     adv_regret = np.zeros((N, d+1))
 
-    for i in range(N):
-        # year = random.randint(1980, 2021)
-        # start = "{}-01-01".format(year)
-        # end = "{}-01-01".format(year+1)
-        # stock_data = get_stock_data(start, end)
-        chosen, stock_data = get_stock_data(k)
-        adv_data = generate_adv(n, k)
+    # year = random.randint(1980, 2021)
+    # start = "{}-01-01".format(year)
+    # end = "{}-01-01".format(year+1)
+    # stock_data = get_stock_data(start, end)
+    chosen, stock_data = get_stock_data(k)
+    adv_data = generate_adv(n, k)
 
+    for i in range(N):
         for e in range(d):
             stock_OPT[i][e], stock_regret[i][e] = analyze_moves(
-                stock_data, EW(stock_data, epsilon=epsilon_list[e], h=2))
+                stock_data, EW(stock_data, epsilon=epsilon_list[e], h=1.2))
             adv_OPT[i][e], adv_regret[i][e] = analyze_moves(
                 adv_data, EW(adv_data, epsilon=epsilon_list[e]))
 
@@ -278,7 +278,8 @@ def test_2(N=20, d=30, n=100, k=10):
     epsilon_list.append('inf')
     plt.figure()
     plt.plot(epsilon_list, stock_avg_reg, label='stock')
-    # plt.plot(epsilon_list, adv_avg_reg, label='adv')
+    ax = plt.gca()
+    ax.axes.xaxis.set_visible(False)
     plt.xlabel("epsilon")
     plt.ylabel("average regret")
     plt.title("Stock n={}".format(len(stock_data)))
@@ -292,4 +293,4 @@ def test_2(N=20, d=30, n=100, k=10):
     plt.savefig('adv.png')
 
 
-test_2(40, k=10, d=15, n=500)
+test_2(200, k=10, d=200, n=500)
